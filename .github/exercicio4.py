@@ -1,9 +1,12 @@
 num = int(input("Insira um número: "))
 
-fatorial = 1
+fato = 1
 i = 1
 
-while i <= num:
-    fatorial *= i
-    i += 1
-print(f"{num}! = {fatorial}")
+if num < 0:
+    print("INVALIDO")
+else:
+    while i <= num:
+        fato *= i
+        i += 1
+    print(f"{num}! = {fato}")

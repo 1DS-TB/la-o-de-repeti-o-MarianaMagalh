@@ -1,10 +1,13 @@
 contador = 0
 
-numeros = int(input("Qual tabuada vc deseja: "))
+numero = int(input("Qual tabuada vc deseja: "))
 
-for num in range(11):
-    if numeros <= 0 :
-        print("INVALIDO")
-    else:
-        tabua = numeros * num
-        print(f"{numeros} X {num} = {tabua}")
+if numero < 0:
+    print("INVALIDO")
+else:
+    for num in range(11):
+        if (numero <= 0) :
+            print("INVALIDO")
+        else:
+            tabua = numero * num
+            print(f"{numero} X {num} = {tabua}")

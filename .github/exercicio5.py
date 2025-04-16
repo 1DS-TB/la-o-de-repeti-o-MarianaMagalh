@@ -1,7 +1,7 @@
-num = int(input("Insira um número: "))
+numero = int(input("Insira um número: "))
 
 while True:
-    if num % 1 == 0 and num % num == 0:
+    if numero % 1 == 0 and numero % numero == 0:
         print("primo")
         break
     else:
