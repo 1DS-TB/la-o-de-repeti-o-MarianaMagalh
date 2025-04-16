@@ -1,4 +1,3 @@
-'''
 perfeitos = []
 
 for num in range(10000):
@@ -16,23 +15,4 @@ for num in range(10000):
         perfeitos.append(soma)
 
 print(perfeitos)
-'''
 
-
-k = []
-
-num = int(input("Inserir: "))
-
-verificacao = "{:02d}".format(num ** 2)
-
-esquerda = verificacao[0:len(verificacao)//2]
-direita = verificacao[len(verificacao)//2:len(verificacao)]
-
-soma = int(esquerda) + int(direita)
-
-if soma == num:
-    k.append(soma)
-else:
-    print("Não é k")
-
-print(k)
