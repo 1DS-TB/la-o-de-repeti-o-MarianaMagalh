@@ -1,155 +1,130 @@
 import random
 
-# jogador
+# Atributos iniciais aleatórios
 hp = random.randint(200, 1000)
-ataque_jogador = random.randint(1, 50)
-ataque_robo = random.randint(1, 50)
-defesa_jogador = random.randint(1, ataque_robo)
-defesa_robo = random.randint(1, ataque_jogador)
+ataque_jogador1 = random.randint(1, 50)
+ataque_jogador2 = random.randint(1, 50)
+defesa_jogador1 = random.randint(1, ataque_jogador2)
+defesa_jogador2 = random.randint(1, ataque_jogador1)
 
-contador = 0
-
-itens = {
-    "1": {"nome": "Poção de Força", "efeito": "ataque + 20", "turno": 2},
-    "2": {"nome": "Poção de regeneração", "efeito": "vida + 50", "turno": 3},
-    "3": {"nome": "Poção de Fraqueza", "efeito": "ataque robo - 20", "turno": 2}
+# Itens especiais
+efeitos = {
+    "1": {"nome": "Poção de Força", "efeito": "ataque +20", "turno": 2},
+    "2": {"nome": "Poção de Regeneração", "efeito": "cura +50", "turno": 3},
+    "3": {"nome": "Poção de Fraqueza", "efeito": "inimigo ataque -20", "turno": 2},
+    "4": {"nome": "Parede de Fogo", "efeito": "defesa +50", "turno": 2}
 }
 
-efeito_jogador = {
-    "efeito": "",
-    "duracao": 0
-}
+# Jogadores
+jogador1 = {"hp": hp, "ataque": ataque_jogador1, "defesa": defesa_jogador1}
+jogador2 = {"hp": hp, "ataque": ataque_jogador2, "defesa": defesa_jogador2}
 
-while True:
-    print("=== DUELO DE HERÓIS ===")
-    print("[1] - Começar a jogar")
-    print("[2] - Sair")
+# Efeitos ativos
+efeito_jogador1 = {"efeito": "", "duracao": 0}
+efeito_jogador2 = {"efeito": "", "duracao": 0}
 
-    op = int(input(""))
+turno = 1  # Alterna os turnos entre 1 e 2
 
-    if op == 2:
-        print("Ate breve!!")
-        break
-    elif op == 1:
+print("=== DUELO DE HERÓIS ===")
+print("Jogador 1 e Jogador 2 se enfrentam!")
 
-        jogador = {
-            "hp": hp,
-            "ataque": ataque_jogador,
-            "defesa": defesa_jogador
-        }
+print("--- JOGADOR 1 ---")
+print(f"HP: {jogador1['hp']}\n"
+      f"ATQ: {jogador1['ataque']} | DEF: {jogador1['defesa']}\n")
 
-        robo = {
-            "hp": hp,
-            "ataque": ataque_robo,
-            "defesa": defesa_robo
-        }
+print("--- JOGADOR 2 ---")
+print(f"HP: {jogador2['hp']}\n"
+      f"ATQ: {jogador2['ataque']} | DEF: {jogador2['defesa']}")
 
-        while jogador['hp'] > 0 and robo['hp'] > 0:
-            print("\n=== VOCÊ ===")
-            print(f"HP: {jogador['hp']}")
-            print(f"ATQ: {jogador['ataque']}           DEF: {jogador['defesa']}\n")
+while jogador1["hp"] > 0 and jogador2["hp"] > 0:
+    if turno == 1:
+        # Aplica efeitos do jogador 1
+        if efeito_jogador1["efeito"] == "1" and efeito_jogador1["duracao"] == 0:
+            jogador1["ataque"] -= 20
+            efeito_jogador1["efeito"] = ""
+        elif efeito_jogador1["efeito"] == "3" and efeito_jogador1["duracao"] == 0:
+            jogador2["ataque"] += 20
+            efeito_jogador1["efeito"] = ""
+        elif efeito_jogador1["duracao"] > 0:
+            efeito_jogador1["duracao"] -= 1
 
-            print("=== INIMIGO ===")
-            print(f"HP: {robo['hp']}")
-            print(f"ATQ: {robo['ataque']}           DEF: {robo['defesa']}")
+        print("\n--- VEZ DO JOGADOR 1 ---")
+        print("[1] - Atacar\n[2] - Curar\n[3] - Usar item")
+        acao = input("Escolha sua ação: ")
 
-            if efeito_jogador['efeito'] == '1':
-                if efeito_jogador['duracao'] > 0:
-                    efeito_jogador['duracao'] -= 1
-                else:
-                    jogador['ataque'] -= 20
-                    efeito_jogador['efeito'] = ''
-            if efeito_jogador['efeito'] == '2':
-                if efeito_jogador['duracao'] > 0:
-                    efeito_jogador['duracao'] -= 1
-                    jogador += 50
-                else:
-                    jogador['ataque'] -= 20
-            if efeito_jogador['efeito'] == '3':
-                if efeito_jogador['duracao'] > 0:
-                    efeito_jogador['duracao'] -= 1
-                else:
-                    jogador['ataque'] += 20
-                    efeito_jogador['efeito'] = ''
+        if acao == "1":
+            dano = jogador1["ataque"] - jogador2["defesa"]
+            if random.random() < 0.1:
+                dano *= 2
+                print("CRÍTICO!")
+            jogador2["hp"] -= max(dano, 0)
+            print(f"Você causou {dano} de dano! HP do jogador 2: {jogador2['hp']}")
 
-            print("\n== Escolha! ===\n"
-                  "[1] - Atacar\n"
-                  "[2] - Curar\n"
-                  "[3] - Itens Especiais")
+        elif acao == "2":
+            jogador1["hp"] = min(hp, jogador1["hp"] + 20)
+            print(f"Você se curou. HP atual: {jogador1['hp']}")
 
-            opcao_batalha = int(input(""))
+        elif acao == "3":
+            for k, v in efeitos.items():
+                print(f"[{k}] {v['nome']} - {v['efeito']}")
+            escolha = input("Escolha o item: ")
 
-            if opcao_batalha == 1:
-                dano = jogador['ataque'] - robo['defesa']
-                if random.random() < 0.1:
-                    dano *= 2
-                robo['hp'] -= dano
+            if escolha == "1":
+                jogador1["ataque"] += 20
+                efeito_jogador1 = {"efeito": "1", "duracao": 2}
+            elif escolha == "2":
+                jogador1["hp"] = min(hp, jogador1["hp"] + 50)
+            elif escolha == "3":
+                jogador2["ataque"] -= 20
+                efeito_jogador1 = {"efeito": "3", "duracao": 2}
 
-                print(f"Vc casou {dano} de dano!")
-                print(f"O inimigo ficou com {robo['hp']} de vida")
+        turno = 2
 
-            elif opcao_batalha == 2:
-                cura = 20
-                if jogador['hp'] + cura > hp:
-                    jogador['hp'] = hp
-                else:
-                    jogador['hp'] += cura
-                print(f"voce ficou com {jogador['hp']} de vida")
+    else:
+        # Aplica efeitos do jogador 2
+        if efeito_jogador2["efeito"] == "1" and efeito_jogador2["duracao"] == 0:
+            jogador2["ataque"] -= 20
+            efeito_jogador2["efeito"] = ""
+        elif efeito_jogador2["efeito"] == "3" and efeito_jogador2["duracao"] == 0:
+            jogador1["ataque"] += 20
+            efeito_jogador2["efeito"] = ""
+        elif efeito_jogador2["duracao"] > 0:
+            efeito_jogador2["duracao"] -= 1
 
-            elif opcao_batalha == 3:
+        print("\n--- VEZ DO JOGADOR 2 ---")
+        print("[1] Atacar\n[2] Curar\n[3] Usar item")
+        acao = input("Escolha sua ação: ")
 
-                print("Itens disponiveis:")
-                for chave,valor in itens.items():
-                    print(f"[{chave} {valor['nome']} - {valor['efeito']}")
-                escolha_item = input("Escolha um item: ")
+        if acao == "1":
+            dano = jogador2["ataque"] - jogador1["defesa"]
+            if random.random() < 0.1:
+                dano *= 2
+                print("CRÍTICO!")
+            jogador1["hp"] -= max(dano, 0)
+            print(f"Você causou {dano} de dano! HP inimigo: {jogador1['hp']}")
 
-                if escolha_item == "1":
-                    jogador['ataque'] += 20
-                    efeito_jogador['efeito'] = '1'
-                    efeito_jogador['duracao'] = 2
-                    print("ataque aumentado por 2 turnos!")
-                elif escolha_item == "2":
-                    jogador['hp'] += 50
-                    efeito_jogador['efeito'] = '2'
-                    efeito_jogador['duracao'] = 3
-                    print("Cura aumentada em 50 por 3 turnos!")
-                elif escolha_item == "3":
-                    robo['ataque'] -= 20
-                    efeito_jogador['efeito'] = '3'
-                    efeito_jogador['duracao'] = 2
-                    print("Ataque inimigo diminuido em 20 por 2 turno!!")
+        elif acao == "2":
+            jogador2["hp"] = min(hp, jogador2["hp"] + 20)
+            print(f"Você se curou. HP atual: {jogador2['hp']}")
 
-            else:
-                print("opção invalida")
+        elif acao == "3":
+            for k, v in efeitos.items():
+                print(f"[{k}] {v['nome']} - {v['efeito']}")
+            escolha = input("Escolha o item: ")
 
-            if robo['hp'] <= 0:
-                print("Voce venceu!")
-                break
+            if escolha == "1":
+                jogador2["ataque"] += 20
+                efeito_jogador2 = {"efeito": "1", "duracao": 2}
+            elif escolha == "2":
+                jogador2["hp"] = min(hp, jogador2["hp"] + 50)
+            elif escolha == "3":
+                jogador1["ataque"] -= 20
+                efeito_jogador2 = {"efeito": "3", "duracao": 2}
 
-            opcao_batalha_robo = random.choice(['1', '2'])
+        turno = 1
 
-            if opcao_batalha_robo == '1':
-                dano = robo['ataque'] - jogador['defesa']
-                if random.random() < 0.1:
-                    dano *= 2
-                jogador['hp'] -= dano
-
-                print(f"O inimigo casou {dano} de dano em vc!")
-                print(f"Vc ficou com {jogador['hp']} de vida!")
-
-            elif opcao_batalha_robo == '2':
-                cura = 20
-
-                if robo['hp'] + cura > hp:
-                    robo['hp']
-                else:
-                    robo['hp'] += cura
-                print(f"o inimigo ficou com {robo['hp']} de vida")
-
-            if jogador['hp'] <= 0:
-                print("Voce perdeu!")
-                break
-
-
-
-
+# Fim de jogo
+if jogador1["hp"] <= 0:
+    print("\nJogador 2 venceu!")
+elif jogador2["hp"] <= 0:
+    print("\nJogador 1 venceu!")
